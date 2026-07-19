@@ -24,6 +24,8 @@ import {
   Network,
   FlaskConical,
   Users,
+  PrinterCheck,
+  Table2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -59,6 +61,8 @@ const navGroups = [
       { label: "Audit Trail", href: "/audit-trail", icon: History },
       { label: "Deadlines", href: "/deadlines", icon: CalendarClock },
       { label: "Benchmarks", href: "/benchmarks", icon: BarChart3 },
+      { label: "Report Generator", href: "/report-generator", icon: PrinterCheck },
+      { label: "ESRS E1 Disclosure", href: "/esrs-e1", icon: Table2 },
     ],
   },
   {

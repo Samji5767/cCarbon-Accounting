@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line,
 } from "recharts";
-import { TrendingDown, CheckCircle, FileText, AlertTriangle, Leaf, Factory, Zap, Globe } from "lucide-react";
+import { TrendingDown, TrendingUp, CheckCircle, FileText, AlertTriangle, Leaf, Factory, Zap, Globe, ArrowDown, ArrowUp, Minus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatTonnes, formatNumber } from "@/lib/utils";
@@ -23,12 +23,44 @@ interface DashboardData {
   recordCount: number;
 }
 
+// Prior year comparison figures (2023 baseline for YoY delta)
+const PRIOR_YEAR = {
+  total: 26800,
+  scope1: 7100,
+  scope2: 4200,
+  scope3: 15500,
+  intensity: 185,
+  verificationRate: 68,
+};
+
+// Historical intensity trend (tCO2e per $M revenue)
+const INTENSITY_TREND = [
+  { year: "2020", intensity: 221 },
+  { year: "2021", intensity: 209 },
+  { year: "2022", intensity: 197 },
+  { year: "2023", intensity: 185 },
+  { year: "2024", intensity: 172 },
+];
+
 const STATUS_MAP: Record<string, { label: string; variant: "default" | "secondary" | "warning" | "destructive" }> = {
   draft: { label: "Draft", variant: "secondary" },
   under_review: { label: "Under Review", variant: "warning" },
   verified: { label: "Verified", variant: "default" },
   published: { label: "Published", variant: "default" },
 };
+
+function YoYChip({ current, prior, inverse = false }: { current: number; prior: number; inverse?: boolean }) {
+  const pct = prior > 0 ? ((current - prior) / prior) * 100 : 0;
+  const isDown = pct < 0;
+  const isGood = inverse ? !isDown : isDown; // for emissions, down = good
+  if (Math.abs(pct) < 0.1) return <span className="text-xs text-gray-400 flex items-center gap-0.5"><Minus className="w-3 h-3" /> flat vs 2023</span>;
+  return (
+    <span className={`text-xs flex items-center gap-0.5 font-medium ${isGood ? "text-emerald-600" : "text-red-500"}`}>
+      {isDown ? <ArrowDown className="w-3 h-3" /> : <ArrowUp className="w-3 h-3" />}
+      {Math.abs(pct).toFixed(1)}% vs 2023
+    </span>
+  );
+}
 
 export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -55,10 +87,13 @@ export default function DashboardPage() {
 
   const { summary } = data;
   const scopeData = [
-    { name: "Scope 1", value: summary.scope1, color: COLORS.scope1, icon: Factory },
-    { name: "Scope 2", value: summary.scope2, color: COLORS.scope2, icon: Zap },
-    { name: "Scope 3", value: summary.scope3, color: COLORS.scope3, icon: Globe },
+    { name: "Scope 1", value: summary.scope1, prior: PRIOR_YEAR.scope1, color: COLORS.scope1, icon: Factory },
+    { name: "Scope 2", value: summary.scope2, prior: PRIOR_YEAR.scope2, color: COLORS.scope2, icon: Zap },
+    { name: "Scope 3", value: summary.scope3, prior: PRIOR_YEAR.scope3, color: COLORS.scope3, icon: Globe },
   ];
+
+  // Scope share bars
+  const totalEmissions = summary.total;
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
@@ -77,7 +112,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* KPI Cards */}
+      {/* KPI Cards with YoY */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
@@ -85,7 +120,10 @@ export default function DashboardPage() {
               <div>
                 <p className="text-sm text-gray-500">Total Emissions</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">{formatTonnes(summary.total)}</p>
-                <p className="text-xs text-gray-400 mt-1">tCO₂e 2024</p>
+                <p className="text-xs text-gray-400 mt-0.5">tCO₂e 2024</p>
+                <div className="mt-1.5">
+                  <YoYChip current={summary.total} prior={PRIOR_YEAR.total} />
+                </div>
               </div>
               <div className="p-2 rounded-lg bg-emerald-50">
                 <Leaf className="w-5 h-5 text-emerald-600" />
@@ -100,12 +138,15 @@ export default function DashboardPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm text-gray-500">{scope.name}</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-1" style={{ color: scope.color }}>
+                  <p className="text-2xl font-bold mt-1" style={{ color: scope.color }}>
                     {formatTonnes(scope.value)}
                   </p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-gray-400 mt-0.5">
                     {formatNumber((scope.value / summary.total) * 100, 1)}% of total
                   </p>
+                  <div className="mt-1.5">
+                    <YoYChip current={scope.value} prior={scope.prior} />
+                  </div>
                 </div>
                 <div className="p-2 rounded-lg" style={{ backgroundColor: scope.color + "15" }}>
                   <scope.icon className="w-5 h-5" style={{ color: scope.color }} />
@@ -115,6 +156,34 @@ export default function DashboardPage() {
           </Card>
         ))}
       </div>
+
+      {/* Scope share bar */}
+      <Card>
+        <CardContent className="pt-4 pb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <p className="text-xs font-semibold text-gray-600">Scope breakdown</p>
+            <span className="text-xs text-gray-400">{formatNumber(totalEmissions, 0)} tCO₂e total</span>
+          </div>
+          <div className="flex h-4 rounded-full overflow-hidden gap-0.5">
+            {scopeData.map((s) => (
+              <div
+                key={s.name}
+                style={{ width: `${(s.value / totalEmissions) * 100}%`, backgroundColor: s.color }}
+                className="flex items-center justify-center text-[9px] text-white font-bold"
+                title={`${s.name}: ${formatNumber((s.value / totalEmissions) * 100, 1)}%`}
+              />
+            ))}
+          </div>
+          <div className="flex gap-4 mt-2">
+            {scopeData.map((s) => (
+              <div key={s.name} className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.color }} />
+                <span className="text-xs text-gray-600">{s.name}: {formatNumber((s.value / totalEmissions) * 100, 1)}%</span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Secondary metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -126,6 +195,7 @@ export default function DashboardPage() {
             <div>
               <p className="text-sm text-gray-500">Emissions Intensity</p>
               <p className="text-xl font-bold text-gray-900">{summary.intensity} tCO₂e/M$</p>
+              <YoYChip current={summary.intensity} prior={PRIOR_YEAR.intensity} />
             </div>
           </CardContent>
         </Card>
@@ -137,6 +207,7 @@ export default function DashboardPage() {
             <div>
               <p className="text-sm text-gray-500">Data Verification Rate</p>
               <p className="text-xl font-bold text-gray-900">{data.verificationRate}%</p>
+              <YoYChip current={data.verificationRate} prior={PRIOR_YEAR.verificationRate} inverse />
             </div>
           </CardContent>
         </Card>
@@ -148,6 +219,7 @@ export default function DashboardPage() {
             <div>
               <p className="text-sm text-gray-500">Emission Records</p>
               <p className="text-xl font-bold text-gray-900">{data.recordCount} entries</p>
+              <span className="text-xs text-gray-400">current inventory</span>
             </div>
           </CardContent>
         </Card>
@@ -204,6 +276,30 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Intensity trend chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Emissions Intensity Trend</CardTitle>
+          <CardDescription>tCO₂e per $M revenue — 5-year historical trajectory</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={180}>
+            <LineChart data={INTENSITY_TREND}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis dataKey="year" tick={{ fontSize: 12 }} />
+              <YAxis domain={[150, 240]} tickFormatter={(v) => `${v}`} tick={{ fontSize: 12 }} />
+              <Tooltip formatter={(v) => [`${v} tCO₂e/$M`, "Intensity"]} />
+              <Line type="monotone" dataKey="intensity" stroke="#3b82f6" strokeWidth={2.5} dot={{ r: 4, fill: "#3b82f6" }} name="Intensity" />
+            </LineChart>
+          </ResponsiveContainer>
+          <div className="flex items-center gap-6 mt-3 text-xs text-gray-500">
+            <span>2020 baseline: <strong>221 tCO₂e/$M</strong></span>
+            <span>2024 current: <strong className="text-emerald-600">172 tCO₂e/$M</strong></span>
+            <span>5-yr reduction: <strong className="text-emerald-600">−22.2%</strong></span>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Targets & Reports */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -274,7 +370,18 @@ export default function DashboardPage() {
               { framework: "SBTi", items: ["Near-term target set", "Long-term net-zero", "Scope 1+2 coverage", "Scope 3 coverage", "Annual reporting"], done: [true, false, true, false, false] },
             ].map((fw) => (
               <div key={fw.framework} className="border border-gray-100 rounded-lg p-4">
-                <p className="font-semibold text-sm text-gray-800 mb-3">{fw.framework}</p>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="font-semibold text-sm text-gray-800">{fw.framework}</p>
+                  <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${
+                    fw.done.filter(Boolean).length === fw.done.length
+                      ? "bg-emerald-100 text-emerald-700"
+                      : fw.done.filter(Boolean).length >= fw.done.length * 0.6
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-red-100 text-red-700"
+                  }`}>
+                    {fw.done.filter(Boolean).length}/{fw.done.length}
+                  </span>
+                </div>
                 <div className="space-y-1.5">
                   {fw.items.map((item, i) => (
                     <div key={i} className="flex items-center gap-2 text-xs">
@@ -287,8 +394,11 @@ export default function DashboardPage() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-3 text-xs text-gray-400">
-                  {fw.done.filter(Boolean).length}/{fw.done.length} complete
+                <div className="mt-3 h-1.5 bg-gray-100 rounded-full">
+                  <div
+                    className="h-1.5 rounded-full bg-emerald-500"
+                    style={{ width: `${(fw.done.filter(Boolean).length / fw.done.length) * 100}%` }}
+                  />
                 </div>
               </div>
             ))}
