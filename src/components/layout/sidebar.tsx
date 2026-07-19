@@ -30,6 +30,10 @@ import {
   Route,
   Milestone,
   Globe2,
+  Microscope,
+  Scale,
+  ShieldAlert,
+  MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -71,6 +75,10 @@ const navGroups = [
       { label: "Transition Plan", href: "/transition-plan", icon: Route },
       { label: "Net-Zero Pathway", href: "/net-zero", icon: Milestone },
       { label: "SFDR / PAI", href: "/sfdr", icon: Globe2 },
+      { label: "LCA / PCF", href: "/lca", icon: Microscope },
+      { label: "CBAM Calculator", href: "/cbam", icon: Scale },
+      { label: "Climate Risk", href: "/climate-risk", icon: ShieldAlert },
+      { label: "Regulatory Navigator", href: "/regulatory-navigator", icon: MapPin },
     ],
   },
   {
