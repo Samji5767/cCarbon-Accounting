@@ -1,0 +1,185 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id             String        @id @default(cuid())
+  name           String?
+  email          String        @unique
+  emailVerified  DateTime?
+  image          String?
+  role           String        @default("viewer")
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  accounts       Account[]
+  sessions       Session[]
+  auditLogs      AuditLog[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Organization {
+  id              String           @id @default(cuid())
+  name            String
+  industry        String
+  country         String
+  reportingYear   Int              @default(2024)
+  baselineYear    Int?
+  targetYear      Int?
+  reductionTarget Float?
+  framework       String           @default("GHG_PROTOCOL")
+  users           User[]
+  facilities      Facility[]
+  emissionRecords EmissionRecord[]
+  reports         Report[]
+  targets         EmissionTarget[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model Facility {
+  id              String           @id @default(cuid())
+  name            String
+  type            String
+  address         String?
+  country         String
+  organizationId  String
+  organization    Organization     @relation(fields: [organizationId], references: [id])
+  emissionRecords EmissionRecord[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model EmissionRecord {
+  id               String          @id @default(cuid())
+  organizationId   String
+  facilityId       String?
+  year             Int
+  month            Int?
+  scope            Int
+  category         String
+  subcategory      String?
+  activityType     String
+  quantity         Float
+  unit             String
+  emissionFactorId String?
+  co2e             Float
+  co2              Float?
+  ch4              Float?
+  n2o              Float?
+  verified         Boolean         @default(false)
+  verifiedBy       String?
+  verifiedAt       DateTime?
+  dataSource       String?
+  notes            String?
+  organization     Organization    @relation(fields: [organizationId], references: [id])
+  facility         Facility?       @relation(fields: [facilityId], references: [id])
+  emissionFactor   EmissionFactor? @relation(fields: [emissionFactorId], references: [id])
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model EmissionFactor {
+  id              String           @id @default(cuid())
+  name            String
+  source          String
+  version         String
+  year            Int
+  country         String?
+  fuelType        String?
+  activityType    String
+  unit            String
+  co2Factor       Float
+  ch4Factor       Float?
+  n2oFactor       Float?
+  co2eTotal       Float
+  gwp100_co2      Float            @default(1)
+  gwp100_ch4      Float            @default(28)
+  gwp100_n2o      Float            @default(265)
+  emissionRecords EmissionRecord[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model Report {
+  id               String       @id @default(cuid())
+  organizationId   String
+  name             String
+  type             String
+  framework        String
+  year             Int
+  status           String       @default("draft")
+  totalScope1      Float        @default(0)
+  totalScope2      Float        @default(0)
+  totalScope3      Float        @default(0)
+  totalCo2e        Float        @default(0)
+  verificationBody String?
+  verificationDate DateTime?
+  publishedAt      DateTime?
+  fileUrl          String?
+  organization     Organization @relation(fields: [organizationId], references: [id])
+  auditLogs        AuditLog[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model EmissionTarget {
+  id             String       @id @default(cuid())
+  organizationId String
+  name           String
+  type           String
+  baselineYear   Int
+  targetYear     Int
+  baselineCo2e   Float
+  targetCo2e     Float
+  reductionPct   Float
+  scope          String
+  status         String       @default("active")
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  reportId   String?
+  action     String
+  resource   String
+  resourceId String?
+  details    String?
+  ipAddress  String?
+  user       User?    @relation(fields: [userId], references: [id])
+  report     Report?  @relation(fields: [reportId], references: [id])
+  createdAt  DateTime @default(now())
+}
