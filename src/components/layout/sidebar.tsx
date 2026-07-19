@@ -21,6 +21,9 @@ import {
   TrendingDown,
   Leaf as LeafIcon,
   Grid3x3,
+  Network,
+  FlaskConical,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +43,7 @@ const navGroups = [
       { label: "Reports", href: "/reports", icon: FileText },
       { label: "Targets", href: "/targets", icon: Target },
       { label: "Scope 3 Materiality", href: "/scope3", icon: GitBranch },
+      { label: "Supplier Engagement", href: "/supplier-engagement", icon: Users },
     ],
   },
   {
@@ -50,6 +54,8 @@ const navGroups = [
       { label: "Scenario Analysis", href: "/scenario-analysis", icon: TrendingDown },
       { label: "Offsets & Credits", href: "/offsets", icon: LeafIcon },
       { label: "Double Materiality", href: "/double-materiality", icon: Grid3x3 },
+      { label: "Consolidation", href: "/consolidation", icon: Network },
+      { label: "Carbon Budget", href: "/carbon-budget", icon: FlaskConical },
       { label: "Audit Trail", href: "/audit-trail", icon: History },
       { label: "Deadlines", href: "/deadlines", icon: CalendarClock },
       { label: "Benchmarks", href: "/benchmarks", icon: BarChart3 },
