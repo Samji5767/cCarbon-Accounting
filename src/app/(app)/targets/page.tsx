@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Target, TrendingDown, Calendar, CheckCircle, AlertTriangle, Plus, Zap, ArrowDown, Minus } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer, Legend, LineChart, Line, ComposedChart, Area } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -72,55 +72,14 @@ const MILESTONES: Milestone[] = [
   { year: 2030, label: "SBTi near-term target achieved", target: "−42% vs 2020 (S1+S2)", status: "pending" },
 ];
 
-export default function TargetsPage() {
-  const [targets, setTargets] = useState<EmissionTarget[]>([]);
-  const [loading, setLoading] = useState(true);
+const DEMO_TARGETS: EmissionTarget[] = [
+  { id: "target-1", name: "Net Zero by 2030 (Scope 1+2)", type: "absolute", baselineYear: 2020, targetYear: 2030, baselineCo2e: 14300, targetCo2e: 0, reductionPct: 100, scope: "scope1_2", status: "active" },
+  { id: "target-2", name: "50% Scope 3 Reduction by 2030", type: "absolute", baselineYear: 2020, targetYear: 2030, baselineCo2e: 18400, targetCo2e: 9200, reductionPct: 50, scope: "scope3", status: "active" },
+  { id: "target-3", name: "SBTi 1.5°C Near-term (Scope 1+2)", type: "sbti", baselineYear: 2020, targetYear: 2030, baselineCo2e: 14300, targetCo2e: 8294, reductionPct: 42, scope: "scope1_2", status: "active" },
+];
 
-  useEffect(() => {
-    fetch("/api/reports") // reuse to grab org data; targets are embedded in dashboard
-      .then(() => {
-        // Use static demo data for targets
-        setTargets([
-          {
-            id: "target-1",
-            name: "Net Zero by 2030 (Scope 1+2)",
-            type: "absolute",
-            baselineYear: 2020,
-            targetYear: 2030,
-            baselineCo2e: 2000,
-            targetCo2e: 0,
-            reductionPct: 100,
-            scope: "scope1_2",
-            status: "active",
-          },
-          {
-            id: "target-2",
-            name: "50% Scope 3 Reduction by 2030",
-            type: "absolute",
-            baselineYear: 2020,
-            targetYear: 2030,
-            baselineCo2e: 300,
-            targetCo2e: 150,
-            reductionPct: 50,
-            scope: "scope3",
-            status: "active",
-          },
-          {
-            id: "target-3",
-            name: "SBTi 1.5°C Near-term Target (Scope 1+2)",
-            type: "sbti",
-            baselineYear: 2020,
-            targetYear: 2025,
-            baselineCo2e: 2000,
-            targetCo2e: 1400,
-            reductionPct: 30,
-            scope: "scope1_2",
-            status: "active",
-          },
-        ]);
-        setLoading(false);
-      });
-  }, []);
+export default function TargetsPage() {
+  const [targets] = useState<EmissionTarget[]>(DEMO_TARGETS);
 
   const currentProgress = (t: EmissionTarget) => {
     // Simulated: current 2024 actual vs baseline
@@ -277,10 +236,7 @@ export default function TargetsPage() {
 
       {/* Target cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {loading ? (
-          <p className="text-gray-400 text-sm col-span-3">Loading...</p>
-        ) : (
-          targets.map((t) => {
+        {targets.map((t) => {
             const progress = currentProgress(t);
             const onTrack = progress >= ((2024 - t.baselineYear) / (t.targetYear - t.baselineYear)) * 100;
 
@@ -344,8 +300,7 @@ export default function TargetsPage() {
                 </CardContent>
               </Card>
             );
-          })
-        )}
+          })}
       </div>
 
       {/* Regulatory context */}

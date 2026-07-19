@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Plus, Download, CheckCircle, Clock, Factory, Zap, Globe, Upload, Info } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -61,9 +61,21 @@ function formatCategory(s: string) {
   return s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+const DEMO_RECORDS: EmissionRecord[] = [
+  { id: "e1", scope: 1, category: "stationary_combustion", activityType: "Natural gas boiler", quantity: 48200, unit: "m³", co2e: 96.4, verified: true, year: 2024, month: null, dataSource: "Meter reading", facility: { name: "Site A" }, emissionFactor: { source: "BEIS 2023", name: "Natural gas" } },
+  { id: "e2", scope: 1, category: "mobile_combustion", activityType: "Diesel fleet", quantity: 32100, unit: "litres", co2e: 85.7, verified: true, year: 2024, month: null, dataSource: "Fleet management", facility: { name: "Site A" }, emissionFactor: { source: "BEIS 2023", name: "Diesel" } },
+  { id: "e3", scope: 1, category: "stationary_combustion", activityType: "HFO combustion", quantity: 8400, unit: "litres", co2e: 22.3, verified: false, year: 2024, month: null, dataSource: "Invoice", facility: { name: "Site C" }, emissionFactor: { source: "IPCC 2006", name: "Heavy fuel oil" } },
+  { id: "e4", scope: 1, category: "fugitive_emissions", activityType: "Refrigerant leak (R410a)", quantity: 12, unit: "kg", co2e: 25.8, verified: false, year: 2024, month: null, dataSource: "Maintenance log", facility: { name: "Site B" }, emissionFactor: { source: "IPCC AR5", name: "R410a" } },
+  { id: "e5", scope: 2, category: "purchased_electricity", activityType: "Grid electricity (LB)", quantity: 1824000, unit: "kWh", co2e: 378.0, verified: true, year: 2024, month: null, dataSource: "Utility invoice", facility: { name: "All sites" }, emissionFactor: { source: "IEA 2023", name: "EU grid average" } },
+  { id: "e6", scope: 2, category: "purchased_heat", activityType: "District heat", quantity: 420000, unit: "kWh", co2e: 58.4, verified: true, year: 2024, month: null, dataSource: "Utility invoice", facility: { name: "Site A" }, emissionFactor: { source: "BEIS 2023", name: "District heating" } },
+  { id: "e7", scope: 3, category: "purchased_goods", activityType: "Steel (hot-rolled)", quantity: 4200, unit: "tonnes", co2e: 8232.0, verified: false, year: 2024, month: null, dataSource: "Spend-based", facility: null, emissionFactor: { source: "Ecoinvent 3.9", name: "Steel billet EU" } },
+  { id: "e8", scope: 3, category: "business_travel", activityType: "Long-haul flights", quantity: 840, unit: "passenger-km (000)", co2e: 192.7, verified: false, year: 2024, month: null, dataSource: "Travel agency", facility: null, emissionFactor: { source: "BEIS 2023", name: "Long-haul flight" } },
+  { id: "e9", scope: 3, category: "waste", activityType: "Landfill (mixed)", quantity: 128, unit: "tonnes", co2e: 24.2, verified: false, year: 2024, month: null, dataSource: "Waste contractor", facility: { name: "Site B" }, emissionFactor: { source: "BEIS 2023", name: "Landfill (mixed)" } },
+  { id: "e10", scope: 3, category: "upstream_transport", activityType: "Road freight inbound", quantity: 284000, unit: "tonne-km", co2e: 63.4, verified: false, year: 2024, month: null, dataSource: "Logistics system", facility: null, emissionFactor: { source: "GLEC 2023", name: "HGV > 34t EU" } },
+];
+
 export default function EmissionsPage() {
-  const [records, setRecords] = useState<EmissionRecord[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [records, setRecords] = useState<EmissionRecord[]>(DEMO_RECORDS);
   const [scopeFilter, setScopeFilter] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [showImport, setShowImport] = useState(false);
@@ -73,12 +85,6 @@ export default function EmissionsPage() {
     scope: "1", category: "stationary_combustion", activityType: "natural_gas",
     quantity: "", unit: "m3", co2e: "", year: "2024", dataSource: "", facilityId: "",
   });
-
-  useEffect(() => {
-    fetch("/api/emissions?year=2024")
-      .then((r) => r.json())
-      .then((d) => { setRecords(d); setLoading(false); });
-  }, []);
 
   function adjustedCo2e(r: EmissionRecord): number {
     const mult = r.scope === 1 ? GWP_SCOPE1_MULTIPLIER[gwpVersion] : 1;
@@ -93,18 +99,18 @@ export default function EmissionsPage() {
     3: records.filter((r) => r.scope === 3).reduce((s, r) => s + adjustedCo2e(r), 0),
   };
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const res = await fetch("/api/emissions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, scope: parseInt(form.scope), quantity: parseFloat(form.quantity), co2e: parseFloat(form.co2e) }),
-    });
-    if (res.ok) {
-      const newRecord = await res.json();
-      setRecords((prev) => [newRecord, ...prev]);
-      setShowForm(false);
-    }
+    const newRecord: EmissionRecord = {
+      id: `e${Date.now()}`, scope: parseInt(form.scope),
+      category: form.category, activityType: form.activityType,
+      quantity: parseFloat(form.quantity), unit: form.unit,
+      co2e: parseFloat(form.co2e), verified: false,
+      year: parseInt(form.year), month: null,
+      dataSource: form.dataSource || null, facility: null, emissionFactor: null,
+    };
+    setRecords((prev) => [newRecord, ...prev]);
+    setShowForm(false);
   }
 
   return (
@@ -289,9 +295,7 @@ export default function EmissionsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {loading ? (
-                  <tr><td colSpan={10} className="px-4 py-8 text-center text-gray-400">Loading...</td></tr>
-                ) : filtered.length === 0 ? (
+                {filtered.length === 0 ? (
                   <tr><td colSpan={10} className="px-4 py-8 text-center text-gray-400">No records found</td></tr>
                 ) : (
                   filtered.map((r) => {

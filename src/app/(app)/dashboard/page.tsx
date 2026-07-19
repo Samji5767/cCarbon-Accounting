@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line,
@@ -62,28 +62,36 @@ function YoYChip({ current, prior, inverse = false }: { current: number; prior: 
   );
 }
 
+const DEMO_DATA: DashboardData = {
+  summary: { scope1: 6420, scope2: 3780, scope3: 14440, total: 24640, intensity: 172 },
+  monthly: Array.from({ length: 12 }, (_, i) => ({
+    month: new Date(2024, i).toLocaleString("default", { month: "short" }),
+    scope1: +(6420 / 12 * (0.85 + Math.sin(i * 0.5) * 0.15)).toFixed(0),
+    scope2: +(3780 / 12 * (0.9 + Math.cos(i * 0.4) * 0.1)).toFixed(0),
+    scope3: +(14440 / 12 * (0.88 + Math.sin(i * 0.6) * 0.12)).toFixed(0),
+  })),
+  categoryData: [
+    { name: "Stationary Combustion", value: 3840 },
+    { name: "Mobile Combustion", value: 2580 },
+    { name: "Purchased Electricity", value: 3780 },
+    { name: "Business Travel", value: 1920 },
+    { name: "Supply Chain", value: 8620 },
+    { name: "Waste", value: 3900 },
+  ],
+  targets: [
+    { id: "t1", name: "Net Zero by 2030", reductionPct: 100, status: "active" },
+    { id: "t2", name: "SBTi 1.5°C Near-term", reductionPct: 42, status: "active" },
+  ],
+  reports: [
+    { id: "r1", name: "GHG Inventory 2024", framework: "GHG Protocol", status: "verified", year: 2024 },
+    { id: "r2", name: "CSRD Report 2024", framework: "CSRD / ESRS", status: "draft", year: 2024 },
+  ],
+  verificationRate: 74,
+  recordCount: 248,
+};
+
 export default function DashboardPage() {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/dashboard")
-      .then((r) => r.json())
-      .then((d) => { setData(d); setLoading(false); });
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="flex items-center gap-2 text-gray-500">
-          <Leaf className="w-5 h-5 animate-spin text-emerald-600" />
-          Loading emissions data...
-        </div>
-      </div>
-    );
-  }
-
-  if (!data) return null;
+  const [data] = useState<DashboardData>(DEMO_DATA);
 
   const { summary } = data;
   const scopeData = [
