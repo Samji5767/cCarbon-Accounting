@@ -17,6 +17,10 @@ import {
   ShieldCheck,
   CalendarClock,
   BarChart3,
+  History,
+  TrendingDown,
+  Leaf as LeafIcon,
+  Grid3x3,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -43,6 +47,10 @@ const navGroups = [
     items: [
       { label: "Carbon Price (ICP)", href: "/carbon-price", icon: DollarSign },
       { label: "Verification", href: "/verification", icon: ShieldCheck },
+      { label: "Scenario Analysis", href: "/scenario-analysis", icon: TrendingDown },
+      { label: "Offsets & Credits", href: "/offsets", icon: LeafIcon },
+      { label: "Double Materiality", href: "/double-materiality", icon: Grid3x3 },
+      { label: "Audit Trail", href: "/audit-trail", icon: History },
       { label: "Deadlines", href: "/deadlines", icon: CalendarClock },
       { label: "Benchmarks", href: "/benchmarks", icon: BarChart3 },
     ],
