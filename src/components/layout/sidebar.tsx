@@ -26,6 +26,10 @@ import {
   Users,
   PrinterCheck,
   Table2,
+  Activity,
+  Route,
+  Milestone,
+  Globe2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -63,6 +67,10 @@ const navGroups = [
       { label: "Benchmarks", href: "/benchmarks", icon: BarChart3 },
       { label: "Report Generator", href: "/report-generator", icon: PrinterCheck },
       { label: "ESRS E1 Disclosure", href: "/esrs-e1", icon: Table2 },
+      { label: "Data Quality", href: "/data-quality", icon: Activity },
+      { label: "Transition Plan", href: "/transition-plan", icon: Route },
+      { label: "Net-Zero Pathway", href: "/net-zero", icon: Milestone },
+      { label: "SFDR / PAI", href: "/sfdr", icon: Globe2 },
     ],
   },
   {
