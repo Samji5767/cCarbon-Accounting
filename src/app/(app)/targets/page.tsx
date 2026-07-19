@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Target, TrendingDown, Calendar, CheckCircle, AlertTriangle, Plus } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer, Legend } from "recharts";
+import { Target, TrendingDown, Calendar, CheckCircle, AlertTriangle, Plus, Zap, ArrowDown, Minus } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer, Legend, LineChart, Line, ComposedChart, Area } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,19 +29,47 @@ const SCOPE_LABELS: Record<string, string> = {
   all: "All Scopes (1+2+3)",
 };
 
-// Science Based Targets progress tracking data
+// SBTi 1.5°C pathway: −42% by 2030 from 2020 base (11,600 tCO₂e S1+S2)
+// Actual = sum of S1+S2 from inventory
 const PATHWAY_DATA = [
-  { year: 2020, actual: 2000, pathway: 2000, target: 2000 },
-  { year: 2021, actual: 1850, pathway: 1800, target: 1800 },
-  { year: 2022, actual: 1720, pathway: 1600, target: 1600 },
-  { year: 2023, actual: 1620, pathway: 1400, target: 1400 },
-  { year: 2024, actual: 1590, pathway: 1200, target: 1200 },
-  { year: 2025, actual: null, pathway: 1000, target: 1000 },
-  { year: 2026, actual: null, pathway: 800, target: 800 },
-  { year: 2027, actual: null, pathway: 600, target: 600 },
-  { year: 2028, actual: null, pathway: 400, target: 400 },
-  { year: 2029, actual: null, pathway: 200, target: 200 },
-  { year: 2030, actual: null, pathway: 0, target: 0 },
+  { year: 2020, actual: 14300, pathway: 14300, gap: 0 },
+  { year: 2021, actual: 13500, pathway: 13398, gap: 102 },
+  { year: 2022, actual: 12500, pathway: 12496, gap: 4 },
+  { year: 2023, actual: 11300, pathway: 11594, gap: -294 },
+  { year: 2024, actual: 10200, pathway: 10692, gap: -492 },
+  { year: 2025, actual: null, pathway: 9790, gap: null },
+  { year: 2026, actual: null, pathway: 8888, gap: null },
+  { year: 2027, actual: null, pathway: 7986, gap: null },
+  { year: 2028, actual: null, pathway: 7084, gap: null },
+  { year: 2029, actual: null, pathway: 6182, gap: null },
+  { year: 2030, actual: null, pathway: 5280, gap: null },
+];
+
+// Annual SBTi deviation alerts (actual − pathway, positive = lagging)
+const DEVIATION_ALERTS = [
+  { year: 2021, deviation: 102, status: "lagging", message: "102 tCO₂e above pathway — review energy procurement" },
+  { year: 2022, deviation: 4, status: "on_track", message: "4 tCO₂e above pathway — effectively on track" },
+  { year: 2023, deviation: -294, status: "ahead", message: "294 tCO₂e ahead of pathway — early delivery of heat decarbonisation" },
+  { year: 2024, deviation: -492, status: "ahead", message: "492 tCO₂e ahead of pathway — renewable PPA and fleet electrification delivering" },
+];
+
+// Milestone tracking
+interface Milestone {
+  year: number;
+  label: string;
+  target: string;
+  status: "completed" | "on_track" | "at_risk" | "pending";
+  note?: string;
+}
+const MILESTONES: Milestone[] = [
+  { year: 2022, label: "100% renewable electricity (S2 LB)", target: "0 tCO₂e S2 LB", status: "completed", note: "EAC contracts executed Apr 2022" },
+  { year: 2023, label: "SBTi near-term target submission", target: "Validated target", status: "completed", note: "Validated Nov 2023" },
+  { year: 2024, label: "Fleet electrification Phase 1 (30%)", target: "−320 tCO₂e", status: "completed", note: "28% converted by Dec 2024" },
+  { year: 2025, label: "Supplier engagement — 50% by spend", target: "5 of 10 key suppliers", status: "on_track", note: "3 committed; 2 in progress" },
+  { year: 2026, label: "Heat pump installation — Sites A&B", target: "−290 tCO₂e", status: "at_risk", note: "Planning permission delayed" },
+  { year: 2027, label: "Fleet electrification Phase 2 (80%)", target: "−640 tCO₂e total", status: "pending" },
+  { year: 2028, label: "Scope 3 Cat. 1 primary data ≥80%", target: "≥80% by weight", status: "pending" },
+  { year: 2030, label: "SBTi near-term target achieved", target: "−42% vs 2020 (S1+S2)", status: "pending" },
 ];
 
 export default function TargetsPage() {
@@ -101,17 +129,41 @@ export default function TargetsPage() {
     return Math.min(Math.max(progress, 0), 100);
   };
 
+  const deviationStats = {
+    lagging: DEVIATION_ALERTS.filter(a => a.status === "lagging").length,
+    ahead: DEVIATION_ALERTS.filter(a => a.status === "ahead").length,
+    latestDeviation: DEVIATION_ALERTS[DEVIATION_ALERTS.length - 1],
+  };
+
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Emission Reduction Targets</h1>
-          <p className="text-gray-500 text-sm mt-1">Science-based targets · Net zero commitments · Regulatory pledges</p>
+          <p className="text-gray-500 text-sm mt-1">Science-based targets · Net zero commitments · SBTi deviation alerts · Milestones</p>
         </div>
         <Button size="sm">
           <Plus className="w-4 h-4 mr-2" /> Add Target
         </Button>
       </div>
+
+      {/* Deviation alert banner */}
+      {deviationStats.latestDeviation && (
+        <div className={`flex items-start gap-3 rounded-xl p-4 border ${deviationStats.latestDeviation.status === "ahead" ? "bg-emerald-50 border-emerald-200" : deviationStats.latestDeviation.status === "lagging" ? "bg-red-50 border-red-200" : "bg-blue-50 border-blue-200"}`}>
+          <Zap className={`w-5 h-5 shrink-0 mt-0.5 ${deviationStats.latestDeviation.status === "ahead" ? "text-emerald-600" : "text-red-600"}`} />
+          <div className="flex-1">
+            <p className={`text-sm font-semibold ${deviationStats.latestDeviation.status === "ahead" ? "text-emerald-800" : "text-red-800"}`}>
+              {deviationStats.latestDeviation.year} SBTi Pathway Deviation · {deviationStats.latestDeviation.status === "ahead" ? "Ahead of pathway ✓" : "Lagging behind pathway ⚠"}
+            </p>
+            <p className={`text-xs mt-0.5 ${deviationStats.latestDeviation.status === "ahead" ? "text-emerald-700" : "text-red-700"}`}>
+              {deviationStats.latestDeviation.message}
+            </p>
+          </div>
+          <span className={`text-lg font-bold ${deviationStats.latestDeviation.status === "ahead" ? "text-emerald-600" : "text-red-600"}`}>
+            {deviationStats.latestDeviation.deviation > 0 ? "+" : ""}{deviationStats.latestDeviation.deviation} tCO₂e
+          </span>
+        </div>
+      )}
 
       {/* SBTi info banner */}
       <Card className="bg-blue-50 border-blue-200">
@@ -130,22 +182,96 @@ export default function TargetsPage() {
       {/* Pathway chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Emissions Reduction Pathway</CardTitle>
-          <CardDescription>Actual vs 1.5°C science-based pathway (Scope 1+2, tCO₂e)</CardDescription>
+          <CardTitle>Emissions Reduction Pathway — Scope 1+2 (tCO₂e)</CardTitle>
+          <CardDescription>Actual vs SBTi 1.5°C pathway · −42% by 2030 from 2020 baseline of 14,300 tCO₂e</CardDescription>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={PATHWAY_DATA} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+            <ComposedChart data={PATHWAY_DATA} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="year" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} />
-              <Tooltip formatter={(v) => typeof v === "number" ? [`${formatNumber(v)} tCO₂e`] : ["Projected"]} />
+              <YAxis tick={{ fontSize: 11 }} tickFormatter={v => `${(v / 1000).toFixed(0)}k`} />
+              <Tooltip formatter={(v) => typeof v === "number" ? `${Number(v).toLocaleString()} tCO₂e` : "Projected"} />
               <Legend />
-              <ReferenceLine y={0} stroke="#22c55e" strokeDasharray="4 4" label={{ value: "Net Zero", fill: "#22c55e", fontSize: 11 }} />
-              <Bar dataKey="actual" name="Actual Emissions" fill="#3b82f6" radius={[3, 3, 0, 0]} />
-              <Bar dataKey="pathway" name="1.5°C Pathway" fill="#d1fae5" radius={[3, 3, 0, 0]} />
-            </BarChart>
+              <Area type="monotone" dataKey="pathway" name="1.5°C Pathway" fill="#d1fae5" stroke="#10b981" strokeWidth={2} strokeDasharray="6 3" fillOpacity={0.4} />
+              <Bar dataKey="actual" name="Actual S1+S2" fill="#3b82f6" radius={[3, 3, 0, 0]} />
+              <ReferenceLine x={2024} stroke="#9ca3af" strokeDasharray="4 2" label={{ value: "Now", fontSize: 10, fill: "#9ca3af" }} />
+            </ComposedChart>
           </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      {/* Annual deviation log */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-sm">SBTi Annual Deviation Log</CardTitle>
+          <CardDescription className="text-xs">Actual S1+S2 vs 1.5°C pathway per year · Positive = lagging, Negative = ahead</CardDescription>
+        </CardHeader>
+        <CardContent className="p-0">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="bg-gray-50 border-b">
+                {["Year", "Actual (tCO₂e)", "Pathway (tCO₂e)", "Deviation", "Status", "Action note"].map(h => (
+                  <th key={h} className="px-3 py-2 text-left font-medium text-gray-500">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {DEVIATION_ALERTS.map(a => (
+                <tr key={a.year} className="hover:bg-gray-50">
+                  <td className="px-3 py-2 font-medium">{a.year}</td>
+                  <td className="px-3 py-2">{(PATHWAY_DATA.find(p => p.year === a.year)?.actual ?? 0).toLocaleString()}</td>
+                  <td className="px-3 py-2">{(PATHWAY_DATA.find(p => p.year === a.year)?.pathway ?? 0).toLocaleString()}</td>
+                  <td className="px-3 py-2">
+                    <span className={`flex items-center gap-1 font-semibold ${a.deviation > 0 ? "text-red-600" : a.deviation < 0 ? "text-emerald-600" : "text-gray-500"}`}>
+                      {a.deviation > 0 ? <AlertTriangle className="w-3 h-3" /> : a.deviation < 0 ? <ArrowDown className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
+                      {a.deviation > 0 ? "+" : ""}{a.deviation} tCO₂e
+                    </span>
+                  </td>
+                  <td className="px-3 py-2">
+                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium capitalize ${a.status === "ahead" ? "bg-emerald-100 text-emerald-700" : a.status === "lagging" ? "bg-red-100 text-red-700" : "bg-blue-100 text-blue-700"}`}>
+                      {a.status === "on_track" ? "On track" : a.status}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 text-gray-500">{a.message}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </CardContent>
+      </Card>
+
+      {/* Milestone tracker */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-sm">Decarbonisation Milestones</CardTitle>
+          <CardDescription className="text-xs">Key delivery points on the pathway to 2030 target</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="relative pl-6">
+            <div className="absolute left-2.5 top-0 bottom-0 w-0.5 bg-gray-200" />
+            {MILESTONES.map((m, i) => {
+              const dotColor = m.status === "completed" ? "#10b981" : m.status === "on_track" ? "#3b82f6" : m.status === "at_risk" ? "#ef4444" : "#9ca3af";
+              return (
+                <div key={i} className="relative flex items-start gap-4 pb-5 last:pb-0">
+                  <div className="absolute -left-4 mt-1 w-4 h-4 rounded-full border-2 border-white" style={{ backgroundColor: dotColor }} />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-gray-500">{m.year}</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium capitalize ${
+                        m.status === "completed" ? "bg-emerald-100 text-emerald-700" :
+                        m.status === "on_track" ? "bg-blue-100 text-blue-700" :
+                        m.status === "at_risk" ? "bg-red-100 text-red-700" :
+                        "bg-gray-100 text-gray-500"
+                      }`}>{m.status.replace("_", " ")}</span>
+                    </div>
+                    <p className="text-sm font-medium text-gray-800 mt-0.5">{m.label}</p>
+                    <p className="text-xs text-gray-500">Target: {m.target}{m.note ? ` · ${m.note}` : ""}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </CardContent>
       </Card>
 

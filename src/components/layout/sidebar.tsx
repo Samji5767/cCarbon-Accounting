@@ -34,6 +34,9 @@ import {
   Scale,
   ShieldAlert,
   MapPin,
+  Link2,
+  TreePine,
+  PresentationIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -79,6 +82,9 @@ const navGroups = [
       { label: "CBAM Calculator", href: "/cbam", icon: Scale },
       { label: "Climate Risk", href: "/climate-risk", icon: ShieldAlert },
       { label: "Regulatory Navigator", href: "/regulatory-navigator", icon: MapPin },
+      { label: "Supply Chain Decarb.", href: "/supply-chain", icon: Link2 },
+      { label: "Nature & Biodiversity", href: "/nature-risk", icon: TreePine },
+      { label: "Executive Reporting", href: "/executive-reporting", icon: PresentationIcon },
     ],
   },
   {
