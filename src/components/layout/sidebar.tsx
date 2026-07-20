@@ -37,6 +37,8 @@ import {
   Link2,
   TreePine,
   PresentationIcon,
+  CreditCard,
+  LineChart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -85,6 +87,8 @@ const navGroups = [
       { label: "Supply Chain Decarb.", href: "/supply-chain", icon: Link2 },
       { label: "Nature & Biodiversity", href: "/nature-risk", icon: TreePine },
       { label: "Executive Reporting", href: "/executive-reporting", icon: PresentationIcon },
+      { label: "Pricing & Plans", href: "/pricing", icon: CreditCard },
+      { label: "Market Intelligence", href: "/market-intelligence", icon: LineChart },
     ],
   },
   {
