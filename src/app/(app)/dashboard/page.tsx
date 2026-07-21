@@ -117,20 +117,20 @@ export default function DashboardPage() {
         <p className="text-slate-500 text-sm mt-0.5">Acme Manufacturing Corp · Reporting Year 2024</p>
       </div>
 
-      {/* Gradient hero KPI cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Gradient hero KPI cards — 2×2 on mobile, 4-col on desktop */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {HERO_CARDS.map((c) => {
           const Icon = c.icon;
           return (
-            <div key={c.label} className={`relative rounded-2xl bg-gradient-to-br ${c.gradient} p-5 text-white overflow-hidden`}>
+            <div key={c.label} className={`relative rounded-2xl bg-gradient-to-br ${c.gradient} max-md:p-4 p-5 text-white overflow-hidden`}>
               <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_top_right,_white,_transparent)]" />
               <div className="flex items-start justify-between mb-3">
-                <p className="text-xs font-medium text-white/60 uppercase tracking-wider">{c.label}</p>
-                <div className="p-1.5 rounded-lg bg-white/10">
+                <p className="text-xs font-medium text-white/60 uppercase tracking-wider leading-tight">{c.label}</p>
+                <div className="p-1.5 rounded-lg bg-white/10 shrink-0 ml-1">
                   <Icon className="w-3.5 h-3.5 text-white/80" />
                 </div>
               </div>
-              <p className="text-3xl font-bold tabular-nums leading-none">{c.value}</p>
+              <p className="text-3xl max-md:text-2xl font-bold tabular-nums leading-none">{c.value}</p>
               <p className="text-xs text-white/50 mt-1">{c.sub}</p>
               <div className="mt-3">{c.chip}</div>
             </div>
@@ -193,74 +193,78 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Area chart with SVG gradient fills */}
+      {/* Area chart — 200px on mobile, 260px on desktop */}
       <Card>
         <CardHeader>
           <CardTitle>Monthly Emissions Trend</CardTitle>
           <CardDescription>Scope 1, 2 & 3 — stacked area by month (tCO₂e)</CardDescription>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={260}>
-            <AreaChart data={data.monthly} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="gs1" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#e11d48" stopOpacity={0.5} />
-                  <stop offset="95%" stopColor="#e11d48" stopOpacity={0.05} />
-                </linearGradient>
-                <linearGradient id="gs2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#ea580c" stopOpacity={0.5} />
-                  <stop offset="95%" stopColor="#ea580c" stopOpacity={0.05} />
-                </linearGradient>
-                <linearGradient id="gs3" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%"  stopColor="#ca8a04" stopOpacity={0.5} />
-                  <stop offset="95%" stopColor="#ca8a04" stopOpacity={0.05} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-              <Tooltip
-                contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0", fontSize: 12 }}
-                formatter={(v) => [`${formatNumber(Number(v))} tCO₂e`]}
-              />
-              <Area type="monotone" dataKey="scope3" stackId="1" stroke="#ca8a04" strokeWidth={1.5} fill="url(#gs3)" name="Scope 3" />
-              <Area type="monotone" dataKey="scope2" stackId="1" stroke="#ea580c" strokeWidth={1.5} fill="url(#gs2)" name="Scope 2" />
-              <Area type="monotone" dataKey="scope1" stackId="1" stroke="#e11d48" strokeWidth={1.5} fill="url(#gs1)" name="Scope 1" />
-            </AreaChart>
-          </ResponsiveContainer>
+          <div className="h-[200px] md:h-[260px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data.monthly} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="gs1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%"  stopColor="#e11d48" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="#e11d48" stopOpacity={0.05} />
+                  </linearGradient>
+                  <linearGradient id="gs2" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%"  stopColor="#ea580c" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="#ea580c" stopOpacity={0.05} />
+                  </linearGradient>
+                  <linearGradient id="gs3" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%"  stopColor="#ca8a04" stopOpacity={0.5} />
+                    <stop offset="95%" stopColor="#ca8a04" stopOpacity={0.05} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+                <Tooltip
+                  contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0", fontSize: 12 }}
+                  formatter={(v) => [`${formatNumber(Number(v))} tCO₂e`]}
+                />
+                <Area type="monotone" dataKey="scope3" stackId="1" stroke="#ca8a04" strokeWidth={1.5} fill="url(#gs3)" name="Scope 3" />
+                <Area type="monotone" dataKey="scope2" stackId="1" stroke="#ea580c" strokeWidth={1.5} fill="url(#gs2)" name="Scope 2" />
+                <Area type="monotone" dataKey="scope1" stackId="1" stroke="#e11d48" strokeWidth={1.5} fill="url(#gs1)" name="Scope 1" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </CardContent>
       </Card>
 
-      {/* Intensity line chart with footer stats */}
+      {/* Intensity line chart — min 200px on mobile */}
       <Card>
         <CardHeader>
           <CardTitle>Emissions Intensity Trend</CardTitle>
           <CardDescription>tCO₂e per $M revenue — 5-year trajectory</CardDescription>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={160}>
-            <LineChart data={INTENSITY_TREND} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="gint" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%"   stopColor="#6366f1" />
-                  <stop offset="100%" stopColor="#059669" />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis dataKey="year" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-              <YAxis domain={[150, 240]} tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-              <Tooltip
-                contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0", fontSize: 12 }}
-                formatter={(v) => [`${v} tCO₂e/$M`, "Intensity"]}
-              />
-              <Line
-                type="monotone" dataKey="intensity"
-                stroke="url(#gint)" strokeWidth={2.5}
-                dot={{ r: 4, fill: "#059669", strokeWidth: 2, stroke: "#fff" }}
-                name="Intensity"
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <div className="h-[200px] md:h-[160px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={INTENSITY_TREND} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="gint" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%"   stopColor="#6366f1" />
+                    <stop offset="100%" stopColor="#059669" />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                <XAxis dataKey="year" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+                <YAxis domain={[150, 240]} tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+                <Tooltip
+                  contentStyle={{ borderRadius: "12px", border: "1px solid #e2e8f0", fontSize: 12 }}
+                  formatter={(v) => [`${v} tCO₂e/$M`, "Intensity"]}
+                />
+                <Line
+                  type="monotone" dataKey="intensity"
+                  stroke="url(#gint)" strokeWidth={2.5}
+                  dot={{ r: 4, fill: "#059669", strokeWidth: 2, stroke: "#fff" }}
+                  name="Intensity"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-1 mt-4 pt-4 border-t border-slate-100 text-xs text-slate-500">
             <span>2020 baseline: <strong className="text-slate-700">221 tCO₂e/$M</strong></span>
             <span>2024 current: <strong className="text-emerald-600">172 tCO₂e/$M</strong></span>
@@ -270,7 +274,7 @@ export default function DashboardPage() {
         </CardContent>
       </Card>
 
-      {/* Compliance grid with colored progress bars and pill status badges */}
+      {/* Compliance grid — single column on mobile, 2-col md, 3-col lg */}
       <Card>
         <CardHeader>
           <CardTitle>Regulatory Compliance Status</CardTitle>

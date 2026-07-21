@@ -20,7 +20,33 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Thin scrollbar for main content */
+/* ── Native feel: remove tap flash, prevent iOS font-size zoom ─────────── */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+button,
+select,
+textarea {
+  font-size: 16px !important;
+}
+
+/* ── Momentum scrolling for all scrollable areas ───────────────────────── */
+.overflow-auto,
+.overflow-y-auto,
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Disable text selection on nav elements ─────────────────────────────── */
+nav,
+aside {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ── Thin scrollbar for main content ───────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
@@ -36,10 +62,63 @@ body {
   background: #94a3b8;
 }
 
-/* White/translucent scrollbar for sidebar */
+/* ── White/translucent scrollbar for sidebar ────────────────────────────── */
 .sidebar-scroll::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
 }
 .sidebar-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
+}
+
+/* ── More sheet slide-up animation ─────────────────────────────────────── */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.more-sheet-enter {
+  animation: slideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ── Mobile overrides (max-width: 768px) ────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Reduce section padding */
+  .p-6 {
+    padding: 1rem !important;
+  }
+
+  /* Soften card corners */
+  .rounded-2xl {
+    border-radius: 0.75rem !important;
+  }
+
+  /* Scale down page headings */
+  h1 {
+    font-size: 1.125rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Chart containers: constrain height */
+  .recharts-responsive-container,
+  .recharts-wrapper {
+    min-height: 200px;
+    max-height: 260px;
+  }
+
+  /* Tables: horizontal scroll with momentum */
+  table,
+  .table-scroll {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Recharts tooltip: smaller font on mobile */
+  .recharts-tooltip-wrapper {
+    font-size: 11px !important;
+  }
 }

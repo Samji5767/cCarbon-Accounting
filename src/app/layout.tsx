@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 
@@ -10,6 +10,12 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   title: "cCarbon — GHG Accounting Platform",
   description: "Regulatory-compliant carbon accounting: GHG Protocol, ISO 14064, TCFD, CSRD, CDP",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
