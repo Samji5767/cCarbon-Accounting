@@ -9,7 +9,7 @@ import {
   History, TrendingDown, Grid3x3, Network, FlaskConical, Users, PrinterCheck,
   Table2, Activity, Route, Milestone, Globe2, Microscope, Scale, ShieldAlert,
   MapPin, Link2, TreePine, PresentationIcon, CreditCard, LineChart, PanelLeftClose,
-  PanelLeftOpen, Calculator, Bot, BookOpen, Map, Sliders, CalendarDays, Sparkles,
+  PanelLeftOpen, Calculator, BookOpen, Map, Sliders, CalendarDays, Sparkles, Bell,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,9 +20,10 @@ const navGroups = [
       { label: "Dashboard",       href: "/dashboard",    icon: LayoutDashboard },
       { label: "Emissions",       href: "/emissions",    icon: Factory },
       { label: "AI Advisor",      href: "/ai-advisor",   icon: Sparkles },
-      { label: "Live Tracker",    href: "/live-tracker", icon: Activity },
-      { label: "Reg Calendar",    href: "/reg-calendar", icon: CalendarClock },
-      { label: "Team",            href: "/team",         icon: Users },
+      { label: "Live Tracker",    href: "/live-tracker",   icon: Activity },
+      { label: "Reg Calendar",    href: "/reg-calendar",   icon: CalendarClock },
+      { label: "Notifications",   href: "/notifications",  icon: Bell },
+      { label: "Team",            href: "/team",           icon: Users },
       { label: "Facilities",      href: "/facilities",   icon: Building2 },
       { label: "Emission Factors",href: "/factors",      icon: Database },
     ],

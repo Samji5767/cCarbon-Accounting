@@ -10,7 +10,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className="flex h-full min-h-screen bg-[#f2f2f7]"
+      className="flex h-full min-h-screen bg-[#f2f2f7] dark:bg-[#1c1c1e]"
       style={isMobile ? { paddingTop: "env(safe-area-inset-top)" } : {}}
     >
       {!isMobile && <Sidebar />}

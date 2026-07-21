@@ -125,6 +125,47 @@ aside {
   animation: slideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+/* ── Dark mode ─────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-page: #1c1c1e;
+    --bg-card: #2c2c2e;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(235,235,245,0.6);
+    --border: rgba(255,255,255,0.08);
+  }
+
+  body {
+    background-color: #1c1c1e;
+    color: #fff;
+  }
+
+  .dark-card {
+    background-color: #2c2c2e !important;
+    border-color: rgba(255,255,255,0.06) !important;
+    color: #fff;
+  }
+
+  input, select, textarea {
+    background-color: #3a3a3c;
+    color: #fff;
+    border-color: rgba(255,255,255,0.1);
+  }
+
+  input::placeholder {
+    color: rgba(235,235,245,0.4);
+  }
+}
+
+/* ── No-scrollbar utility ───────────────────────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* ── Mobile overrides (max-width: 768px) ────────────────────────────────── */
 @media (max-width: 768px) {
   /* iOS grouped background */
