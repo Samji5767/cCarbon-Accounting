@@ -44,6 +44,7 @@ const navGroups = [
       { label: "Verification",          href: "/verification",          icon: ShieldCheck },
       { label: "Scenario Analysis",     href: "/scenario-analysis",     icon: TrendingDown },
       { label: "Offsets & Credits",     href: "/offsets",               icon: Leaf },
+      { label: "Offset Market",         href: "/offset-market",         icon: TreePine },
       { label: "Double Materiality",    href: "/double-materiality",    icon: Grid3x3 },
       { label: "Consolidation",         href: "/consolidation",         icon: Network },
       { label: "Carbon Budget",         href: "/carbon-budget",         icon: FlaskConical },

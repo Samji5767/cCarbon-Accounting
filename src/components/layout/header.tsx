@@ -47,6 +47,7 @@ const ROUTE_LABELS: Record<string, string> = {
   "/team": "Team",
   "/notifications": "Notifications",
   "/onboarding": "Setup",
+  "/offset-market": "Offset Market",
 };
 
 export function Header() {
