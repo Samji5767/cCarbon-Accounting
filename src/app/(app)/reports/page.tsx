@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatNumber } from "@/lib/utils";
 import { REGULATORY_FRAMEWORKS } from "@/lib/emission-factors";
+import { PageHeader } from "@/components/layout/page-header";
 
 interface Report {
   id: string;
@@ -58,9 +59,12 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6 max-w-7xl mx-auto">
+      <div className="md:hidden">
+        <PageHeader title="Reports" subtitle="GHG Protocol · CSRD · CDP disclosures" />
+      </div>
       <div className="flex items-start justify-between">
-        <div>
+        <div className="hidden md:block">
           <h1 className="text-2xl font-bold text-gray-900">Regulatory Reports</h1>
           <p className="text-gray-500 text-sm mt-1">GHG Protocol · ISO 14064 · TCFD · CSRD · CDP disclosures</p>
         </div>

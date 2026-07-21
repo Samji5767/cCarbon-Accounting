@@ -5,6 +5,7 @@ import { Check, X, Zap, Building2, Globe, ArrowRight, TrendingUp, Users, DollarS
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import { formatNumber } from "@/lib/utils";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
 
@@ -143,40 +144,35 @@ export default function PricingPage() {
         </p>
       </div>
 
-      {/* Tab nav */}
-      <div className="flex justify-center gap-2">
-        {[
-          { id: "pricing", label: "Plans & Pricing" },
-          { id: "market", label: "Revenue Model" },
-          { id: "compare", label: "Competitor Comparison" },
-        ].map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setActiveTab(t.id as typeof activeTab)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              activeTab === t.id ? "bg-emerald-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
+      {/* Tab nav — iOS segmented control */}
+      <div className="flex justify-center">
+        <SegmentedControl
+          options={[
+            { value: "pricing", label: "Plans" },
+            { value: "market", label: "Revenue" },
+            { value: "compare", label: "Compare" },
+          ]}
+          value={activeTab}
+          onChange={(v) => setActiveTab(v as typeof activeTab)}
+        />
       </div>
 
       {/* PRICING TAB */}
       {activeTab === "pricing" && (
         <div className="space-y-8">
-          {/* Billing toggle */}
+          {/* Billing toggle — iOS segmented control */}
           <div className="flex justify-center items-center gap-3">
-            <span className={`text-sm ${billing === "monthly" ? "text-gray-900 font-medium" : "text-gray-400"}`}>Monthly</span>
-            <button
-              onClick={() => setBilling(billing === "monthly" ? "annual" : "monthly")}
-              className={`relative w-12 h-6 rounded-full transition-colors ${billing === "annual" ? "bg-emerald-600" : "bg-gray-300"}`}
-            >
-              <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${billing === "annual" ? "translate-x-7" : "translate-x-1"}`} />
-            </button>
-            <span className={`text-sm ${billing === "annual" ? "text-gray-900 font-medium" : "text-gray-400"}`}>
-              Annual <Badge variant="secondary" className="text-[10px] ml-1">Save 20%</Badge>
-            </span>
+            <SegmentedControl
+              options={[
+                { value: "monthly", label: "Monthly" },
+                { value: "annual", label: "Annual" },
+              ]}
+              value={billing}
+              onChange={(v) => setBilling(v as typeof billing)}
+            />
+            {billing === "annual" && (
+              <Badge variant="secondary" className="text-[10px]">Save 20%</Badge>
+            )}
           </div>
 
           {/* Plan cards */}

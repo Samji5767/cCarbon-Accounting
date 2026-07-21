@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
+  --background: #f2f2f7;
   --foreground: #0f172a;
 }
 
@@ -12,34 +12,43 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* iOS SF Pro font stack */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-family: -apple-system, "SF Pro Display", "SF Pro Text", BlinkMacSystemFont, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* ── Native feel: remove tap flash, prevent iOS font-size zoom ─────────── */
+/* iOS momentum scrolling on all scroll containers */
 * {
-  -webkit-tap-highlight-color: transparent;
-}
-
-input,
-button,
-select,
-textarea {
-  font-size: 16px !important;
-}
-
-/* ── Momentum scrolling for all scrollable areas ───────────────────────── */
-.overflow-auto,
-.overflow-y-auto,
-.overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
 
-/* ── Disable text selection on nav elements ─────────────────────────────── */
+/* Remove ALL blue tap flash + disable callout */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Native input appearance + prevent iOS font-size zoom */
+input,
+select,
+textarea {
+  -webkit-appearance: none;
+  border-radius: 10px;
+  font-size: 16px !important;
+}
+
+button {
+  font-size: 16px !important;
+}
+
+/* Prevent text selection on interactive elements */
+button,
+label,
 nav,
 aside {
   user-select: none;
@@ -70,6 +79,38 @@ aside {
   background: rgba(255, 255, 255, 0.25);
 }
 
+/* ── Page transition animations ────────────────────────────────────────── */
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: pageFadeIn 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* ── Skeleton shimmer ───────────────────────────────────────────────────── */
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #e8e8ed 25%, #f2f2f7 50%, #e8e8ed 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
 /* ── More sheet slide-up animation ─────────────────────────────────────── */
 @keyframes slideUp {
   from {
@@ -86,6 +127,11 @@ aside {
 
 /* ── Mobile overrides (max-width: 768px) ────────────────────────────────── */
 @media (max-width: 768px) {
+  /* iOS grouped background */
+  body {
+    background: #f2f2f7;
+  }
+
   /* Reduce section padding */
   .p-6 {
     padding: 1rem !important;

@@ -10,17 +10,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className="flex h-full min-h-screen bg-slate-50"
+      className="flex h-full min-h-screen bg-[#f2f2f7]"
       style={isMobile ? { paddingTop: "env(safe-area-inset-top)" } : {}}
     >
       {!isMobile && <Sidebar />}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         {!isMobile && <Header />}
         <main
-          className="flex-1 overflow-auto"
+          className="flex-1 overflow-auto page-enter"
           style={
             isMobile
-              ? { paddingBottom: "calc(56px + env(safe-area-inset-bottom))" }
+              ? { paddingBottom: "calc(49px + env(safe-area-inset-bottom))" }
               : {}
           }
         >

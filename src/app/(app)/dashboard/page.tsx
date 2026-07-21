@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   AreaChart, Area, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -8,6 +8,8 @@ import {
 import { TrendingDown, CheckCircle, FileText, AlertTriangle, Leaf, Factory, Zap, Globe, ArrowDown, ArrowUp, Minus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { DashboardSkeleton } from "@/components/ui/skeleton";
+import { PageHeader } from "@/components/layout/page-header";
 import { formatTonnes, formatNumber } from "@/lib/utils";
 
 const PRIOR_YEAR = { total: 26800, scope1: 7100, scope2: 4200, scope3: 15500, intensity: 185, verificationRate: 68 };
@@ -71,8 +73,14 @@ const COMPLIANCE_FRAMEWORKS = [
 
 export default function DashboardPage() {
   const [data] = useState(DEMO_DATA);
+  const [isLoading, setIsLoading] = useState(true);
   const { summary } = data;
   const total = summary.total;
+
+  useEffect(() => {
+    const t = setTimeout(() => setIsLoading(false), 600);
+    return () => clearTimeout(t);
+  }, []);
 
   const HERO_CARDS = [
     {
@@ -109,20 +117,55 @@ export default function DashboardPage() {
     },
   ];
 
+  if (isLoading) {
+    return <DashboardSkeleton />;
+  }
+
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
-      {/* Page title */}
-      <div>
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6 max-w-7xl mx-auto">
+      {/* iOS Large Title header (mobile) / compact header (desktop) */}
+      <div className="md:hidden">
+        <PageHeader title="Dashboard" subtitle="Acme Corp · FY 2024" />
+      </div>
+      <div className="hidden md:block">
         <h1 className="text-xl font-bold text-slate-900">GHG Emissions Dashboard</h1>
         <p className="text-slate-500 text-sm mt-0.5">Acme Manufacturing Corp · Reporting Year 2024</p>
       </div>
 
-      {/* Gradient hero KPI cards — 2×2 on mobile, 4-col on desktop */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* KPI cards — iOS widget style (full-width stack) on mobile, gradient grid on desktop */}
+      {/* Mobile: single-column native widget cards */}
+      <div className="flex flex-col gap-3 md:hidden">
+        {HERO_CARDS.map((c, idx) => {
+          const Icon = c.icon;
+          const accentColors = ["#1d4ed8", "#e11d48", "#ea580c", "#ca8a04"];
+          const accent = accentColors[idx];
+          return (
+            <div key={c.label} className="relative rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08),0_0_0_0.5px_rgba(0,0,0,0.06)] overflow-hidden flex items-stretch">
+              <div className="w-1 shrink-0" style={{ backgroundColor: accent }} />
+              <div className="flex flex-1 items-center justify-between px-4 py-3">
+                <div>
+                  <p className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">{c.label}</p>
+                  <p className="text-2xl font-bold tabular-nums text-slate-900 leading-tight mt-0.5">{c.value}</p>
+                  <div className="mt-1">{c.chip}</div>
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  <div className="p-2 rounded-xl" style={{ backgroundColor: accent + "18" }}>
+                    <Icon className="w-5 h-5" style={{ color: accent }} />
+                  </div>
+                  <p className="text-[10px] text-slate-400 text-right">{c.sub}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop: gradient 2×2 / 4-col grid */}
+      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
         {HERO_CARDS.map((c) => {
           const Icon = c.icon;
           return (
-            <div key={c.label} className={`relative rounded-2xl bg-gradient-to-br ${c.gradient} max-md:p-4 p-5 text-white overflow-hidden`}>
+            <div key={c.label} className={`relative rounded-2xl bg-gradient-to-br ${c.gradient} p-5 text-white overflow-hidden`}>
               <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_top_right,_white,_transparent)]" />
               <div className="flex items-start justify-between mb-3">
                 <p className="text-xs font-medium text-white/60 uppercase tracking-wider leading-tight">{c.label}</p>
@@ -130,7 +173,7 @@ export default function DashboardPage() {
                   <Icon className="w-3.5 h-3.5 text-white/80" />
                 </div>
               </div>
-              <p className="text-3xl max-md:text-2xl font-bold tabular-nums leading-none">{c.value}</p>
+              <p className="text-3xl font-bold tabular-nums leading-none">{c.value}</p>
               <p className="text-xs text-white/50 mt-1">{c.sub}</p>
               <div className="mt-3">{c.chip}</div>
             </div>

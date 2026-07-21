@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatNumber } from "@/lib/utils";
+import { PageHeader } from "@/components/layout/page-header";
 
 interface EmissionRecord {
   id: string;
@@ -114,9 +115,12 @@ export default function EmissionsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6 max-w-7xl mx-auto">
+      <div className="md:hidden">
+        <PageHeader title="Emissions" subtitle="GHG Protocol Scope 1, 2 & 3 · 2024" />
+      </div>
       <div className="flex items-start justify-between flex-wrap gap-3">
-        <div>
+        <div className="hidden md:block">
           <h1 className="text-2xl font-bold text-gray-900">Emission Records</h1>
           <p className="text-gray-500 text-sm mt-1">GHG Protocol Scope 1, 2 & 3 inventory · 2024</p>
         </div>
