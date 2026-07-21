@@ -1,22 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
-  Factory,
-  FileText,
-  Target,
-  Building2,
-  Database,
-  Settings,
-  Leaf,
-  ChevronRight,
-  DollarSign,
-  GitBranch,
-  ShieldCheck,
-  CalendarClock,
-  BarChart3,
+  LayoutDashboard, Factory, FileText, Target, Building2, Database, Settings, Leaf,
+  ChevronRight, DollarSign, GitBranch, ShieldCheck, CalendarClock, BarChart3,
+  History, TrendingDown, Grid3x3, Network, FlaskConical, Users, PrinterCheck,
+  Table2, Activity, Route, Milestone, Globe2, Microscope, Scale, ShieldAlert,
+  MapPin, Link2, TreePine, PresentationIcon, CreditCard, LineChart, PanelLeftClose,
+  PanelLeftOpen, Calculator, BookOpen, Map, Sliders, CalendarDays, Sparkles, Bell,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,27 +17,66 @@ const navGroups = [
   {
     label: "Core",
     items: [
-      { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-      { label: "Emissions", href: "/emissions", icon: Factory },
-      { label: "Facilities", href: "/facilities", icon: Building2 },
-      { label: "Emission Factors", href: "/factors", icon: Database },
+      { label: "Dashboard",       href: "/dashboard",    icon: LayoutDashboard },
+      { label: "Emissions",       href: "/emissions",    icon: Factory },
+      { label: "AI Advisor",      href: "/ai-advisor",   icon: Sparkles },
+      { label: "Live Tracker",    href: "/live-tracker",   icon: Activity },
+      { label: "Reg Calendar",    href: "/reg-calendar",   icon: CalendarClock },
+      { label: "Notifications",   href: "/notifications",  icon: Bell },
+      { label: "Team",            href: "/team",           icon: Users },
+      { label: "Facilities",      href: "/facilities",   icon: Building2 },
+      { label: "Emission Factors",href: "/factors",      icon: Database },
     ],
   },
   {
     label: "Reporting",
     items: [
-      { label: "Reports", href: "/reports", icon: FileText },
-      { label: "Targets", href: "/targets", icon: Target },
-      { label: "Scope 3 Materiality", href: "/scope3", icon: GitBranch },
+      { label: "Reports",             href: "/reports",             icon: FileText },
+      { label: "Targets",             href: "/targets",             icon: Target },
+      { label: "Scope 3 Materiality", href: "/scope3",              icon: GitBranch },
+      { label: "Supplier Engagement", href: "/supplier-engagement", icon: Users },
     ],
   },
   {
     label: "Advanced",
     items: [
-      { label: "Carbon Price (ICP)", href: "/carbon-price", icon: DollarSign },
-      { label: "Verification", href: "/verification", icon: ShieldCheck },
-      { label: "Deadlines", href: "/deadlines", icon: CalendarClock },
-      { label: "Benchmarks", href: "/benchmarks", icon: BarChart3 },
+      { label: "Carbon Price (ICP)",    href: "/carbon-price",          icon: DollarSign },
+      { label: "Verification",          href: "/verification",          icon: ShieldCheck },
+      { label: "Scenario Analysis",     href: "/scenario-analysis",     icon: TrendingDown },
+      { label: "Offsets & Credits",     href: "/offsets",               icon: Leaf },
+      { label: "Offset Market",         href: "/offset-market",         icon: TreePine },
+      { label: "Double Materiality",    href: "/double-materiality",    icon: Grid3x3 },
+      { label: "Consolidation",         href: "/consolidation",         icon: Network },
+      { label: "Carbon Budget",         href: "/carbon-budget",         icon: FlaskConical },
+      { label: "Audit Trail",           href: "/audit-trail",           icon: History },
+      { label: "Deadlines",             href: "/deadlines",             icon: CalendarClock },
+      { label: "Benchmarks",            href: "/benchmarks",            icon: BarChart3 },
+      { label: "Report Generator",      href: "/report-generator",      icon: PrinterCheck },
+      { label: "ESRS E1 Disclosure",    href: "/esrs-e1",               icon: Table2 },
+      { label: "Data Quality",          href: "/data-quality",          icon: Activity },
+      { label: "Transition Plan",       href: "/transition-plan",       icon: Route },
+      { label: "Net-Zero Pathway",      href: "/net-zero",              icon: Milestone },
+      { label: "SFDR / PAI",            href: "/sfdr",                  icon: Globe2 },
+      { label: "LCA / PCF",             href: "/lca",                   icon: Microscope },
+      { label: "CBAM Calculator",       href: "/cbam",                  icon: Scale },
+      { label: "Climate Risk",          href: "/climate-risk",          icon: ShieldAlert },
+      { label: "Regulatory Navigator",  href: "/regulatory-navigator",  icon: MapPin },
+      { label: "Supply Chain Decarb.",  href: "/supply-chain",          icon: Link2 },
+      { label: "Nature & Biodiversity", href: "/nature-risk",           icon: TreePine },
+      { label: "Executive Reporting",   href: "/executive-reporting",   icon: PresentationIcon },
+      { label: "Pricing & Plans",       href: "/pricing",               icon: CreditCard },
+      { label: "Market Intelligence",   href: "/market-intelligence",   icon: LineChart },
+    ],
+  },
+  {
+    label: "Tools",
+    items: [
+      { label: "Footprint Calculator", href: "/calculator",          icon: Calculator },
+      { label: "AI Advisor",           href: "/ai-advisor",          icon: Sparkles },
+      { label: "Factor Library",       href: "/factor-library",      icon: BookOpen },
+      { label: "Supply Chain Map",     href: "/supply-chain-map",    icon: Map },
+      { label: "Net Zero Planner",     href: "/net-zero-planner",    icon: Sliders },
+      { label: "Compliance Calendar",  href: "/compliance-calendar", icon: CalendarDays },
     ],
   },
   {
@@ -57,27 +89,46 @@ const navGroups = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <aside className="flex flex-col w-64 min-h-screen bg-gray-900 text-white">
+    <aside
+      className={cn(
+        "flex flex-col min-h-screen transition-all duration-300 select-none",
+        "bg-[#0b1120] text-white",
+        collapsed ? "w-[60px]" : "w-64"
+      )}
+    >
       {/* Logo */}
-      <div className="flex items-center gap-2 px-6 py-5 border-b border-gray-700">
-        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500">
-          <Leaf className="w-5 h-5 text-white" />
+      <div className={cn(
+        "flex items-center gap-3 px-4 py-5 border-b border-white/8",
+        collapsed && "justify-center px-0"
+      )}>
+        <div className="flex items-center justify-center w-8 h-8 rounded-xl shrink-0 bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-900/40">
+          <Leaf className="w-4 h-4 text-white" />
         </div>
-        <div>
-          <p className="font-bold text-sm leading-tight">cCarbon</p>
-          <p className="text-gray-400 text-xs">GHG Accounting</p>
-        </div>
+        {!collapsed && (
+          <div>
+            <p className="font-bold text-sm leading-tight bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent">
+              cCarbon
+            </p>
+            <p className="text-white/40 text-[10px]">GHG Accounting</p>
+          </div>
+        )}
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
+      <nav className={cn(
+        "flex-1 py-4 overflow-y-auto overflow-hidden sidebar-scroll",
+        collapsed ? "px-1 space-y-1" : "px-3 space-y-5"
+      )}>
         {navGroups.map((group) => (
           <div key={group.label}>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-1">
-              {group.label}
-            </p>
+            {!collapsed && (
+              <p className="text-[10px] font-semibold text-white/30 uppercase tracking-widest px-3 mb-1.5">
+                {group.label}
+              </p>
+            )}
             <div className="space-y-0.5">
               {group.items.map((item) => {
                 const active = pathname.startsWith(item.href);
@@ -85,16 +136,22 @@ export function Sidebar() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    title={collapsed ? item.label : undefined}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                      "flex items-center gap-3 rounded-xl text-sm font-medium transition-all duration-150",
+                      collapsed ? "justify-center p-2 mx-auto w-10 h-10" : "px-3 py-2",
                       active
-                        ? "bg-emerald-600 text-white"
-                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                        ? "bg-emerald-500/15 text-emerald-300 shadow-[inset_2px_0_0_0_#10b981]"
+                        : "text-white/50 hover:bg-white/5 hover:text-white/90"
                     )}
                   >
-                    <item.icon className="w-4 h-4 shrink-0" />
-                    {item.label}
-                    {active && <ChevronRight className="w-3 h-3 ml-auto" />}
+                    <item.icon className={cn("shrink-0", collapsed ? "w-5 h-5" : "w-4 h-4")} />
+                    {!collapsed && (
+                      <>
+                        <span className="truncate">{item.label}</span>
+                        {active && <ChevronRight className="w-3 h-3 ml-auto shrink-0 text-emerald-400" />}
+                      </>
+                    )}
                   </Link>
                 );
               })}
@@ -103,28 +160,48 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* Regulatory Frameworks banner */}
-      <div className="mx-3 mb-4 p-3 rounded-lg bg-emerald-900/50 border border-emerald-700">
-        <p className="text-xs font-semibold text-emerald-300 mb-1">Frameworks</p>
-        <div className="flex flex-wrap gap-1">
-          {["GHG Protocol", "ISO 14064", "TCFD", "CSRD", "CDP"].map((f) => (
-            <span key={f} className="text-[10px] bg-emerald-800 text-emerald-200 px-1.5 py-0.5 rounded">
-              {f}
-            </span>
-          ))}
+      {/* Frameworks banner */}
+      {!collapsed && (
+        <div className="mx-3 mb-3 p-3 rounded-xl bg-emerald-950/60 border border-emerald-800/40 shrink-0">
+          <p className="text-[10px] font-semibold text-emerald-400 mb-1.5 uppercase tracking-wider">Frameworks</p>
+          <div className="flex flex-wrap gap-1">
+            {["GHG Protocol", "ISO 14064", "TCFD", "CSRD", "CDP"].map((f) => (
+              <span key={f} className="text-[10px] bg-emerald-900/60 text-emerald-300 px-1.5 py-0.5 rounded-md">
+                {f}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* User */}
-      <div className="flex items-center gap-3 px-4 py-4 border-t border-gray-700">
-        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-600 text-sm font-bold">
-          A
+      {/* User row */}
+      {!collapsed && (
+        <div className="flex items-center gap-3 px-4 py-3 border-t border-white/8">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-xs font-bold shrink-0">
+            A
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate text-white/90">Alex Admin</p>
+            <p className="text-[11px] text-white/35 truncate">admin@acme.com</p>
+          </div>
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium truncate">Alex Admin</p>
-          <p className="text-xs text-gray-400 truncate">admin@acme.com</p>
-        </div>
-      </div>
+      )}
+
+      {/* Collapse button */}
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className={cn(
+          "flex items-center gap-2 px-4 py-3 border-t border-white/8 text-white/40 hover:text-white/70 transition-colors text-xs",
+          collapsed && "justify-center px-0"
+        )}
+      >
+        {collapsed ? <PanelLeftOpen className="w-4 h-4" /> : (
+          <>
+            <PanelLeftClose className="w-4 h-4" />
+            <span>Collapse</span>
+          </>
+        )}
+      </button>
     </aside>
   );
 }

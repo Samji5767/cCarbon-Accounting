@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Plus, FileText, CheckCircle, Clock, Eye, Download } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatNumber } from "@/lib/utils";
 import { REGULATORY_FRAMEWORKS } from "@/lib/emission-factors";
+import { PageHeader } from "@/components/layout/page-header";
 
 interface Report {
   id: string;
@@ -32,36 +33,38 @@ const STATUS_CONFIG = {
   published: { label: "Published", variant: "default" as const, icon: CheckCircle },
 };
 
+const DEMO_REPORTS: Report[] = [
+  { id: "r1", name: "GHG Inventory Report 2024", type: "annual", framework: "GHG_PROTOCOL", year: 2024, status: "verified", totalScope1: 6420, totalScope2: 3780, totalScope3: 14440, totalCo2e: 24640, verificationBody: "Bureau Veritas", verificationDate: "2025-03-15", publishedAt: null, createdAt: "2025-01-10" },
+  { id: "r2", name: "CSRD Sustainability Statement 2024", type: "csrd", framework: "CSRD", year: 2024, status: "draft", totalScope1: 6420, totalScope2: 3780, totalScope3: 14440, totalCo2e: 24640, verificationBody: null, verificationDate: null, publishedAt: null, createdAt: "2025-02-01" },
+  { id: "r3", name: "CDP Climate Questionnaire 2024", type: "cdp", framework: "CDP", year: 2024, status: "under_review", totalScope1: 6420, totalScope2: 3780, totalScope3: 14440, totalCo2e: 24640, verificationBody: null, verificationDate: null, publishedAt: null, createdAt: "2025-01-20" },
+  { id: "r4", name: "GHG Inventory Report 2023", type: "annual", framework: "GHG_PROTOCOL", year: 2023, status: "published", totalScope1: 7100, totalScope2: 4200, totalScope3: 15500, totalCo2e: 26800, verificationBody: "SGS", verificationDate: "2024-03-20", publishedAt: "2024-04-01", createdAt: "2024-01-15" },
+];
+
 export default function ReportsPage() {
-  const [reports, setReports] = useState<Report[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [reports, setReports] = useState<Report[]>(DEMO_REPORTS);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: "", framework: "GHG_PROTOCOL", year: "2024" });
 
-  useEffect(() => {
-    fetch("/api/reports")
-      .then((r) => r.json())
-      .then((d) => { setReports(d); setLoading(false); });
-  }, []);
-
-  async function handleCreate(e: React.FormEvent) {
+  function handleCreate(e: React.FormEvent) {
     e.preventDefault();
-    const res = await fetch("/api/reports", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, year: parseInt(form.year) }),
-    });
-    if (res.ok) {
-      const r = await res.json();
-      setReports((prev) => [r, ...prev]);
-      setShowForm(false);
-    }
+    const newReport: Report = {
+      id: `r${Date.now()}`, name: form.name, type: "annual",
+      framework: form.framework, year: parseInt(form.year), status: "draft",
+      totalScope1: 0, totalScope2: 0, totalScope3: 0, totalCo2e: 0,
+      verificationBody: null, verificationDate: null, publishedAt: null,
+      createdAt: new Date().toISOString(),
+    };
+    setReports((prev) => [newReport, ...prev]);
+    setShowForm(false);
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6 pb-24 md:pb-6 max-w-7xl mx-auto">
+      <div className="md:hidden">
+        <PageHeader title="Reports" subtitle="GHG Protocol · CSRD · CDP disclosures" />
+      </div>
       <div className="flex items-start justify-between">
-        <div>
+        <div className="hidden md:block">
           <h1 className="text-2xl font-bold text-gray-900">Regulatory Reports</h1>
           <p className="text-gray-500 text-sm mt-1">GHG Protocol · ISO 14064 · TCFD · CSRD · CDP disclosures</p>
         </div>
@@ -145,10 +148,7 @@ export default function ReportsPage() {
       )}
 
       {/* Reports list */}
-      {loading ? (
-        <p className="text-gray-400 text-sm">Loading reports...</p>
-      ) : (
-        <div className="space-y-3">
+      <div className="space-y-3">
           {reports.map((r) => {
             const sc = STATUS_CONFIG[r.status as keyof typeof STATUS_CONFIG] ?? STATUS_CONFIG.draft;
             const Icon = sc.icon;
@@ -192,7 +192,6 @@ export default function ReportsPage() {
             );
           })}
         </div>
-      )}
     </div>
   );
 }
