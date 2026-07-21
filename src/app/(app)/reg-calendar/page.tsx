@@ -44,7 +44,7 @@ export default function RegCalendarPage() {
   });
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 pb-24 md:pb-6">
       <PageHeader title="Reg Calendar" subtitle="Global compliance deadlines" />
 
       {/* Summary strip */}

@@ -24,7 +24,7 @@ export default function NotificationsPage() {
   const unreadCount = NOTIFICATIONS.filter(n => n.unread && !read.includes(n.id)).length;
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 pb-24 md:pb-6">
       <PageHeader title="Notifications" subtitle={unreadCount > 0 ? `${unreadCount} unread` : "All caught up"} />
 
       <div className="flex items-center justify-between">

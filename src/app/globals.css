@@ -166,6 +166,27 @@ aside {
   scrollbar-width: none;
 }
 
+/* ── Final polish ───────────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+button:active { transform: scale(0.97); }
+
+:focus-visible { outline: 2px solid #10b981; outline-offset: 2px; }
+
+body { overscroll-behavior-y: none; }
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+.gradient-text {
+  background: linear-gradient(135deg, #10b981, #0d9488);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card-press { transition: transform 0.1s ease, box-shadow 0.1s ease; }
+.card-press:active { transform: scale(0.98); box-shadow: 0 0 0 rgba(0,0,0,0); }
+
 /* ── Mobile overrides (max-width: 768px) ────────────────────────────────── */
 @media (max-width: 768px) {
   /* iOS grouped background */

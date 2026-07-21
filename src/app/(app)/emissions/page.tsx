@@ -5,6 +5,7 @@ import { Plus, Download, CheckCircle, Clock, Factory, Zap, Globe, Upload, Info }
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { formatNumber } from "@/lib/utils";
 import { PageHeader } from "@/components/layout/page-header";
 
@@ -115,7 +116,7 @@ export default function EmissionsPage() {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-4 md:space-y-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6 pb-24 md:pb-6 max-w-7xl mx-auto">
       <div className="md:hidden">
         <PageHeader title="Emissions" subtitle="GHG Protocol Scope 1, 2 & 3 · 2024" />
       </div>
@@ -287,6 +288,14 @@ export default function EmissionsPage() {
       {/* Records table */}
       <Card>
         <CardContent className="p-0">
+          {filtered.length === 0 ? (
+            <EmptyState
+              icon={Factory}
+              title="No records found"
+              description="Try changing the scope filter or add a new emission record."
+              action={{ label: "Add Record", onClick: () => setShowForm(true) }}
+            />
+          ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-100">
@@ -299,10 +308,7 @@ export default function EmissionsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {filtered.length === 0 ? (
-                  <tr><td colSpan={10} className="px-4 py-8 text-center text-gray-400">No records found</td></tr>
-                ) : (
-                  filtered.map((r) => {
+                {filtered.map((r) => {
                     const ScopeIcon = SCOPE_ICONS[r.scope as 1 | 2 | 3];
                     const adj = adjustedCo2e(r);
                     const biogenicFrac = BIOGENIC_FRACTION[r.category] ?? 0;
@@ -346,11 +352,11 @@ export default function EmissionsPage() {
                         </td>
                       </tr>
                     );
-                  })
-                )}
+                })}
               </tbody>
             </table>
           </div>
+          )}
         </CardContent>
       </Card>
 

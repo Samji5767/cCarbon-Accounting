@@ -90,7 +90,7 @@ export default function ExecutiveReportingPage() {
   const sections = AUDIENCE_SECTIONS[audience];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6 pb-24 md:pb-6">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>

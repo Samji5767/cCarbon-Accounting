@@ -63,7 +63,7 @@ export default function LiveTrackerPage() {
   const dailyBudget = 38.2;
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 pb-24 md:pb-6">
       <PageHeader title="Live Tracker" subtitle="Real-time facility emissions" />
 
       {/* Live indicator */}

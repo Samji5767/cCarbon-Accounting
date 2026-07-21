@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { DashboardSkeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/layout/page-header";
+import { PullToRefresh } from "@/components/ui/pull-refresh";
 import { formatTonnes, formatNumber } from "@/lib/utils";
 
 const PRIOR_YEAR = { total: 26800, scope1: 7100, scope2: 4200, scope3: 15500, intensity: 185, verificationRate: 68 };
@@ -122,7 +123,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-4 md:space-y-6 max-w-7xl mx-auto">
+    <PullToRefresh onRefresh={async () => { await new Promise(r => setTimeout(r, 800)); }}>
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6 pb-24 md:pb-6 max-w-7xl mx-auto">
       {/* iOS Large Title header (mobile) / compact header (desktop) */}
       <div className="md:hidden">
         <PageHeader title="Dashboard" subtitle="Acme Corp · FY 2024" />
@@ -365,5 +367,6 @@ export default function DashboardPage() {
         </CardContent>
       </Card>
     </div>
+    </PullToRefresh>
   );
 }

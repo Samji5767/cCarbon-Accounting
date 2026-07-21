@@ -134,7 +134,7 @@ export default function PricingPage() {
   const [activeTab, setActiveTab] = useState<"pricing" | "market" | "compare">("pricing");
 
   return (
-    <div className="p-6 space-y-8 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-8 pb-24 md:pb-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="text-center space-y-2">
         <Badge variant="secondary" className="mb-2">Market size $27.5B · 24% CAGR · $136B by 2034</Badge>

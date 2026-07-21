@@ -42,7 +42,7 @@ export default function TeamPage() {
   const [activeTab, setActiveTab] = useState<"tasks" | "team" | "activity">("tasks");
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 pb-24 md:pb-6">
       <PageHeader title="Team" subtitle="5 members · 12 active tasks" />
 
       {/* iOS-style segmented tab bar */}

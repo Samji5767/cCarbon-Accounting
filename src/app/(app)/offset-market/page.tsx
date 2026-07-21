@@ -76,7 +76,7 @@ export default function OffsetMarketPage() {
 
   if (selected) {
     return (
-      <div className="p-4 space-y-4">
+      <div className="p-4 space-y-4 pb-24 md:pb-6">
         <button onClick={() => setSelected(null)} className="text-[15px] text-[#007AFF] font-medium flex items-center gap-1">
           ← Back to Market
         </button>
@@ -135,7 +135,7 @@ export default function OffsetMarketPage() {
   }
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 pb-24 md:pb-6">
       <PageHeader title="Offset Market" subtitle="Verified carbon credits" />
 
       {/* Tab switcher */}

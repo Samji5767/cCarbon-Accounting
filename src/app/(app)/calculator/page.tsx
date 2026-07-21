@@ -180,7 +180,7 @@ export default function CalculatorPage() {
   const flightTCO2e = (form.flightsShort * SHORT_FLIGHT_KM * EF.flightShortKm + form.flightsLong * LONG_FLIGHT_KM * EF.flightLongKm) / 1_000;
 
   return (
-    <div className="p-4 md:p-6 max-w-2xl mx-auto space-y-4">
+    <div className="p-4 md:p-6 max-w-2xl mx-auto space-y-4 pb-24 md:pb-6">
       <div>
         <h1 className="text-xl font-bold text-slate-900">Carbon Footprint Calculator</h1>
         <p className="text-slate-500 text-sm mt-0.5">Annual tCO₂e across energy, transport, supply chain & waste</p>

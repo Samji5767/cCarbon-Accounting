@@ -125,7 +125,7 @@ export default function EsrsE1Page() {
   const [activeTab, setActiveTab] = useState<TabKey>("e1_6");
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 md:p-6 space-y-6 pb-24 md:pb-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">ESRS E1 — Climate Change Disclosures</h1>
         <p className="text-sm text-gray-500 mt-1">

@@ -119,7 +119,7 @@ export function Sidebar() {
 
       {/* Nav */}
       <nav className={cn(
-        "flex-1 py-4 overflow-y-auto sidebar-scroll",
+        "flex-1 py-4 overflow-y-auto overflow-hidden sidebar-scroll",
         collapsed ? "px-1 space-y-1" : "px-3 space-y-5"
       )}>
         {navGroups.map((group) => (
@@ -162,7 +162,7 @@ export function Sidebar() {
 
       {/* Frameworks banner */}
       {!collapsed && (
-        <div className="mx-3 mb-3 p-3 rounded-xl bg-emerald-950/60 border border-emerald-800/40">
+        <div className="mx-3 mb-3 p-3 rounded-xl bg-emerald-950/60 border border-emerald-800/40 shrink-0">
           <p className="text-[10px] font-semibold text-emerald-400 mb-1.5 uppercase tracking-wider">Frameworks</p>
           <div className="flex flex-wrap gap-1">
             {["GHG Protocol", "ISO 14064", "TCFD", "CSRD", "CDP"].map((f) => (

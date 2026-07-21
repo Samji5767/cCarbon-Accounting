@@ -218,7 +218,7 @@ export default function NetZeroPlannerPage() {
   const sbtiAligned = reductionPct2030 >= 42; // 42% by 2030 = well-below 2°C threshold
 
   return (
-    <div className="p-4 md:p-6 space-y-4 max-w-5xl mx-auto">
+    <div className="p-4 md:p-6 space-y-4 pb-24 md:pb-6 max-w-5xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>

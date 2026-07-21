@@ -59,7 +59,7 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-4 md:space-y-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6 pb-24 md:pb-6 max-w-7xl mx-auto">
       <div className="md:hidden">
         <PageHeader title="Reports" subtitle="GHG Protocol · CSRD · CDP disclosures" />
       </div>

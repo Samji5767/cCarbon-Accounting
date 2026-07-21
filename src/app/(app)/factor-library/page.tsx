@@ -217,7 +217,7 @@ export default function FactorLibraryPage() {
   const getValue = (f: EmissionFactor) => gwp === "AR5" ? f.value_ar5 : f.value_ar6;
 
   return (
-    <div className="p-4 md:p-6 space-y-4 max-w-5xl mx-auto">
+    <div className="p-4 md:p-6 space-y-4 pb-24 md:pb-6 max-w-5xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div>
           <h1 className="text-xl font-bold text-slate-900">Emission Factor Library</h1>
