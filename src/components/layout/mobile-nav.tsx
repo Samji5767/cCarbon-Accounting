@@ -3,16 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Factory, FileText, Target, Grid3x3 } from "lucide-react";
+import { LayoutDashboard, Factory, Sparkles, Users, Grid3x3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MoreSheet } from "./more-sheet";
 import { haptics } from "@/lib/haptics";
 
 const TABS = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Dashboard", href: "/dashboard",  icon: LayoutDashboard },
   { label: "Emissions",  href: "/emissions",  icon: Factory },
-  { label: "Reports",   href: "/reports",    icon: FileText },
-  { label: "Targets",   href: "/targets",    icon: Target },
+  { label: "AI Advisor", href: "/ai-advisor", icon: Sparkles },
+  { label: "Team",       href: "/team",       icon: Users },
 ];
 
 export function MobileNav() {

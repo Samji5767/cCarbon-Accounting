@@ -7,10 +7,14 @@ import {
   CalendarClock, BarChart3, PrinterCheck, Table2, Activity, Route,
   Milestone, Globe2, Microscope, Scale, ShieldAlert, MapPin, Link2,
   TreePine, PresentationIcon, CreditCard, LineChart, Settings,
-  Calculator, Bot, BookOpen, Map, Sliders, CalendarDays,
+  Calculator, Bot, BookOpen, Map, Sliders, CalendarDays, FileText, Target,
 } from "lucide-react";
 
 const MORE_ITEMS = [
+  { label: "Reports",      href: "/reports",             icon: FileText },
+  { label: "Targets",      href: "/targets",             icon: Target },
+  { label: "Live Tracker", href: "/live-tracker",        icon: Activity },
+  { label: "Reg Calendar", href: "/reg-calendar",        icon: CalendarClock },
   { label: "Facilities",   href: "/facilities",          icon: Building2 },
   { label: "Factors",      href: "/factors",             icon: Database },
   { label: "Scope 3",      href: "/scope3",              icon: GitBranch },

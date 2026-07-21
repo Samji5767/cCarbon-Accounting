@@ -38,6 +38,10 @@ const ROUTE_LABELS: Record<string, string> = {
   "/pricing": "Pricing & Plans",
   "/market-intelligence": "Market Intelligence",
   "/settings": "Settings",
+  "/ai-advisor": "AI Advisor",
+  "/live-tracker": "Live Tracker",
+  "/reg-calendar": "Regulatory Calendar",
+  "/team": "Team",
 };
 
 export function Header() {
