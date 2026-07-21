@@ -9,7 +9,7 @@ import {
   History, TrendingDown, Grid3x3, Network, FlaskConical, Users, PrinterCheck,
   Table2, Activity, Route, Milestone, Globe2, Microscope, Scale, ShieldAlert,
   MapPin, Link2, TreePine, PresentationIcon, CreditCard, LineChart, PanelLeftClose,
-  PanelLeftOpen,
+  PanelLeftOpen, Calculator, Bot, BookOpen, Map, Sliders, CalendarDays,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -60,6 +60,17 @@ const navGroups = [
       { label: "Executive Reporting",   href: "/executive-reporting",   icon: PresentationIcon },
       { label: "Pricing & Plans",       href: "/pricing",               icon: CreditCard },
       { label: "Market Intelligence",   href: "/market-intelligence",   icon: LineChart },
+    ],
+  },
+  {
+    label: "Tools",
+    items: [
+      { label: "Footprint Calculator", href: "/calculator",          icon: Calculator },
+      { label: "AI Advisor",           href: "/ai-advisor",          icon: Bot },
+      { label: "Factor Library",       href: "/factor-library",      icon: BookOpen },
+      { label: "Supply Chain Map",     href: "/supply-chain-map",    icon: Map },
+      { label: "Net Zero Planner",     href: "/net-zero-planner",    icon: Sliders },
+      { label: "Compliance Calendar",  href: "/compliance-calendar", icon: CalendarDays },
     ],
   },
   {
@@ -143,7 +154,7 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* Frameworks banner (hidden when collapsed) */}
+      {/* Frameworks banner */}
       {!collapsed && (
         <div className="mx-3 mb-3 p-3 rounded-xl bg-emerald-950/60 border border-emerald-800/40">
           <p className="text-[10px] font-semibold text-emerald-400 mb-1.5 uppercase tracking-wider">Frameworks</p>

@@ -28,14 +28,6 @@
                                     <constraint firstAttribute="width" constant="20" id="wdt-Em-grn"/>
                                     <constraint firstAttribute="height" constant="20" id="hgt-Em-grn"/>
                                 </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <real key="value" value="10"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds">
-                                        <boolean key="value" value="YES"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.0431" green="0.0667" blue="0.1255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

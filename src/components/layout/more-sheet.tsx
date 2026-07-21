@@ -7,6 +7,7 @@ import {
   CalendarClock, BarChart3, PrinterCheck, Table2, Activity, Route,
   Milestone, Globe2, Microscope, Scale, ShieldAlert, MapPin, Link2,
   TreePine, PresentationIcon, CreditCard, LineChart, Settings,
+  Calculator, Bot, BookOpen, Map, Sliders, CalendarDays,
 } from "lucide-react";
 
 const MORE_ITEMS = [
@@ -39,6 +40,12 @@ const MORE_ITEMS = [
   { label: "Executive",    href: "/executive-reporting", icon: PresentationIcon },
   { label: "Pricing",      href: "/pricing",             icon: CreditCard },
   { label: "Market Intel.",href: "/market-intelligence", icon: LineChart },
+  { label: "Calculator",   href: "/calculator",          icon: Calculator },
+  { label: "AI Advisor",   href: "/ai-advisor",          icon: Bot },
+  { label: "Factor Lib.",  href: "/factor-library",      icon: BookOpen },
+  { label: "Supply Map",   href: "/supply-chain-map",    icon: Map },
+  { label: "Net Zero Plan",href: "/net-zero-planner",    icon: Sliders },
+  { label: "Cal. Calendar",href: "/compliance-calendar", icon: CalendarDays },
   { label: "Settings",     href: "/settings",            icon: Settings },
 ];
 
