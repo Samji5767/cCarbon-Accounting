@@ -1,16 +1,2 @@
-import { PrismaClient } from "@prisma/client";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
-
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
-
-function createPrisma() {
-  const url = process.env.DATABASE_URL ?? "file:///home/user/cCarbon-Accounting/dev.db";
-  const adapter = new PrismaLibSql({ url });
-  return new PrismaClient({ adapter } as never);
-}
-
-export const prisma = globalForPrisma.prisma ?? createPrisma();
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Prisma stub — not used in static export build
+export const prisma = {} as never;
